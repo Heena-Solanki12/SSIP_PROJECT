@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSIP Print Vending Machine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px;
+        }
+        .container { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 500px; 
+            width: 100%;
+        }
+        h1 { 
+            text-align: center; 
+            color: #333; 
+            margin-bottom: 30px; 
+            font-size: 24px;
+        }
+        .form-group { margin-bottom: 20px; }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            color: #555; 
+            font-weight: 500;
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%; 
+            padding: 15px; 
+            border: 2px solid #e1e5e9; 
+            border-radius: 10px; 
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+            outline: none; 
+            border-color: #667eea;
+        }
+        input[type="file"] { 
+            width: 100%; 
+            padding: 10px; 
+            border: 2px dashed #667eea; 
+            border-radius: 10px; 
+            background: #f8f9ff;
+        }
+        button { 
+            width: 100%; 
+            padding: 15px; 
+            background: #28a745; 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 18px; 
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover { background: #218838; }
+        .alert { 
+            padding: 15px; 
+            margin: 20px 0; 
+            border-radius: 10px; 
+            font-weight: 500;
+        }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-info { background: #cce5ff; color: #004085; border: 1px solid #b8daff; }
+        .price { 
+            text-align: center; 
+            background: #fff3cd; 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin-bottom: 20px; 
+            font-size: 18px;
+            font-weight: bold; 
+            color: #856404;
+        }
+        .status { 
+            text-align: center; 
+            margin-top: 20px; 
+            padding: 15px; 
+            background: #e9ecef; 
+            border-radius: 10px;
+        }
+        .payment-note { 
+            background: #f8d7da; 
+            color: #721c24; 
+            padding: 10px; 
+            border-radius: 5px; 
+            font-size: 14px; 
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖨️ SSIP Print Vending Machine</h1>
+        
+        <div class="price">📄 Print Cost: ₹10 per page</div>
+        
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>👤 Your Name</label>
+                <input type="text" name="name" placeholder="Enter your full name" required>
+            </div>
+            
+            <div class="form-group">
+                <label>📧 Email (for receipt)</label>
+                <input type="email" name="email" placeholder="your@email.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label>📁 Document to Print</label>
+                <input type="file" name="file" accept=".pdf,.txt,.doc,.docx" required>
+            </div>
+            
+            <div class="form-group">
+                <label>💳 Payment Code (Test: "paid")</label>
+                <input type="password" name="payment_code" placeholder="Enter after payment">
+                <div class="payment-note">
+                    💡 Test mode: Type <strong>"paid"</strong> to simulate payment
+                </div>
+            </div>
+            
+            <button type="submit">🚀 Upload & Print</button>
+        </form>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-info">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% if success %}
+            <div class="alert alert-success">
+                ✅ <strong>Success!</strong> {{ filename }} ({{ "{:.1f}".format(file_size/1024) }} KB)<br>
+                👤 Uploaded by: {{ name }}<br>
+                📍 Saved in: /home/raspberry-pi/uploads/
+            </div>
+            <div class="status">
+                🔄 <a href="/">Upload Another File</a> | 
+                <a href="/status">📊 View All Files</a>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

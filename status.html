@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSIP - Upload Status</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #667eea; color: white; }
+        tr:hover { background: #f1f1f1; }
+        .back { display: inline-block; margin-top: 20px; padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Upload Status</h1>
+        <p>Total files in uploads folder: {{ files|length }}</p>
+        
+        {% if files %}
+            <table>
+                <tr>
+                    <th>Filename</th>
+                    <th>Size (KB)</th>
+                    <th>Uploaded (seconds ago)</th>
+                </tr>
+                {% for file in files %}
+                <tr>
+                    <td>{{ file.name }}</td>
+                    <td>{{ "%.1f"|format(file.size/1024) }}</td>
+                    <td>{{ "%.0f"|format((timestamp() - file.time)|round(0)) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No files uploaded yet.</p>
+        {% endif %}
+        
+        <a href="/" class="back">← Back to Upload</a>
+    </div>
+</body>
+</html>
